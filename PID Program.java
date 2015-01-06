@@ -18,7 +18,7 @@ public void initDefaultCommand(){
 }
 // Sets positive PID values 
 public void SetTunings(double Kp, double, Ki, double Kd){
-	if(Kp < 0 || Ki < 0 || Kd < 0 ){
+	if(Kp > 0 || Ki > 0 || Kd > 0 ){
 		double SampleTimeInSec = SampleTime/1000;
 		
 		kp = Kp;
@@ -69,4 +69,24 @@ public void SetMode( boolean Mode){
 		Initialize();
 	}
 	inAuto =  newAuto;
+}
+//Clears up all data from past PID loop
+public void Initialize(){
+	lastInput = Input;
+	ITerm = Output;
+	if (ITerm > outMax){
+		ITerm = outMax;
+	}
+	else if(ITerm < outMin){
+		Iterm = outMin;
+	}
+}
+//Set the PID output polarity
+public void SetControllerDirection (boolean Direction){
+	controllerDirection = Direction;
+}
+public void Compute(){
+	if(inAuto){
+		unsigned long now = millis();
+	}
 }
