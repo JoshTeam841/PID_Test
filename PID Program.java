@@ -34,6 +34,39 @@ public void SetTunings(double Kp, double, Ki, double Kd){
 // Sets Sample Time
 public void SetSampleTime( int NewSampleTime){
 	if (NewSampleTime > 0){
+		double ratio = (double) NewSampleTime / (double) SampleTime;
 		
+		ki *=ratio;
+		kd /=ratio;
+		
+		SampleTime = (Unsigned Long) NewSampleTime;
 	}
+}
+// Sets Limit to Output
+public void SetOutputLimits( double Min, double Max){
+	if(Min < Max){
+		outMin = Min;
+		outMax = Max;
+		
+		if(Output > outMax){
+			Output = outMax;
+		}
+		else if(Output < outMin){
+			Output = outMin;
+		}
+		if (ITerm > outMax){
+			ITerm = outMax;
+		}
+		else if(ITerm < outMin){
+			Iterm = outMin;
+		}
+	}
+}
+// Turns on PID loop
+public void SetMode( boolean Mode){
+	boolean newAuto = Mode;
+	if(newAuto && !inAuto){
+		Initialize();
+	}
+	inAuto =  newAuto;
 }
