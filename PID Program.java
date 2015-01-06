@@ -1,4 +1,4 @@
-unsigned long lastTime;
+long lastTime;
 double Input, Output, Setpoint;
 double ITerm, lastInput;
 double kp, ki, kd;
@@ -39,7 +39,7 @@ public void SetSampleTime( int NewSampleTime){
 		ki *=ratio;
 		kd /=ratio;
 		
-		SampleTime = (Unsigned Long) NewSampleTime;
+		SampleTime = (Long) NewSampleTime;
 	}
 }
 // Sets Limit to Output
@@ -87,6 +87,34 @@ public void SetControllerDirection (boolean Direction){
 }
 public void Compute(){
 	if(inAuto){
-		unsigned long now = millis();
+		long now = millis();
+		int timeChange = (now - lastTime);
+		
+		if(timeChange >= SampleTime){
+			//Compute all the working variables
+			double error = Setpoint - Input;
+			ITerm += (ki * error);
+			if( ITerm > outMax ){
+				ITerm = outMax;
+			}
+			else if( ITerm < outMin ){
+				ITerm = outMin;
+			}
+			double dInput = (Input - lastInput);
+			
+			//Compute PID Output
+			Output = kp * error + ITerm - kd * dInput;
+			
+			if( Output > outMax ){
+				Output = outMax;
+			}
+			else if( Output < outMin ){
+				Output = outMin;
+			}
+			
+			//Remember some variables for next time
+			lastInput = Input;
+			lastTime = now;
+		}
 	}
 }
